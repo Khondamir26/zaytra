@@ -1,0 +1,19 @@
+services:
+  app:
+    build:
+      context: .
+    image: zaytra_ai_app:${TAG:-latest}
+    container_name: zaytra_app
+    restart: always
+    ports:
+      - "6000:3000"
+    env_file:
+      - .env.local
+    environment:
+      NODE_ENV: production
+    networks:
+      - zaytra_net
+
+networks:
+  zaytra_net:
+    external: true

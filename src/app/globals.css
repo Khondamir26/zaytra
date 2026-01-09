@@ -1,0 +1,216 @@
+/* globals.css */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-chart-6: var(--chart-6);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+
+  /* === Brand Colors === */
+  --brand-dark-blue: #012e9e; /* RGB 1,46,158 */
+  --brand-blue: #197bc8;      /* RGB 25,123,200 */
+  --brand-navy: #081c4e;      /* RGB 8,28,78 */
+  --brand-teal: #00C3C1;     /* RGB 12,195,193 */
+  --brand-black: #000000;
+  --brand-white: #ffffff;
+
+  /* === UI tokens (light) === */
+  --background: var(--brand-white);
+  --foreground: var(--brand-black);
+  --card: var(--brand-white);
+  --card-foreground: var(--brand-navy);
+  --popover: var(--brand-white);
+  --popover-foreground: var(--brand-navy);
+  --primary: var(--brand-teal);
+  --primary-foreground: var(--brand-white);
+  --secondary: var(--brand-teal);
+  --secondary-foreground: var(--brand-white);
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: var(--brand-teal);
+  --accent-foreground: var(--brand-black);
+  --destructive: #dc2626;
+  --border: #e5e7eb;
+  --input: #d1d5db;
+  --ring: var(--brand-blue);
+
+  --chart-1: var(--brand-dark-blue);
+  --chart-2: var(--brand-blue);
+  --chart-3: var(--brand-teal);
+  --chart-4: #f59e0b;
+  --chart-5: #10b981;
+  --chart-6: #ef4444;
+
+  --sidebar: var(--brand-white);
+  --sidebar-foreground: var(--brand-navy);
+  --sidebar-primary: var(--brand-dark-blue);
+  --sidebar-primary-foreground: var(--brand-white);
+  --sidebar-accent: var(--brand-blue);
+  --sidebar-accent-foreground: var(--brand-white);
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: var(--brand-blue);
+
+  --zaytra-hero-gradient-start: #0f1f4b;
+  --zaytra-hero-gradient-end: #00b6bd;
+  --zaytra-hero-bg: linear-gradient(135deg, var(--zaytra-hero-gradient-start), var(--zaytra-hero-gradient-end));
+  --zaytra-accent: var(--brand-teal);
+}
+
+.dark {
+  --background: var(--brand-navy);
+  --foreground: var(--brand-white);
+  --card: var(--zaytra-hero-bg);
+  --card-foreground: var(--brand-white);
+  --popover: var(--brand-navy);
+  --popover-foreground: var(--brand-white);
+  --primary: var(--brand-teal);
+  --primary-foreground: var(--brand-navy);
+  --secondary: var(--brand-teal);
+  --secondary-foreground: var(--brand-white);
+  --muted: #1e293b;
+  --muted-foreground: #9ca3af;
+  --accent: var(--brand-teal);
+  --accent-foreground: var(--brand-white);
+  --destructive: #ef4444;
+  --border: #1f2937;
+  --input: #374151;
+  --ring: var(--brand-teal);
+
+  --chart-1: var(--brand-teal);
+  --chart-2: var(--brand-blue);
+  --chart-3: var(--brand-dark-blue);
+  --chart-4: #f59e0b;
+  --chart-5: #10b981;
+  --chart-6: #ef4444;
+
+  --sidebar: var(--brand-dark-blue);
+  --sidebar-foreground: var(--brand-white);
+  --sidebar-primary: var(--brand-teal);
+  --sidebar-primary-foreground: var(--brand-navy);
+  --sidebar-accent: var(--brand-blue);
+  --sidebar-accent-foreground: var(--brand-white);
+  --sidebar-border: #1f2937;
+  --sidebar-ring: var(--brand-teal);
+}
+
+@layer base {
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground; 
+  }
+
+}
+
+@layer utilities {
+
+
+  .animate-fade-in-up {
+    @apply opacity-0 translate-y-4 transition-all duration-700 ease-out;
+  }
+
+  .in-view {
+    @apply opacity-100 translate-y-0;
+  }
+
+ @keyframes zoom {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.5);
+    }
+  }
+
+  .animate-zoom {
+    animation: zoom 1.5s ease-in-out infinite;
+  }
+
+  /* Добавим классы с разной задержкой */
+  .delay-0 { animation-delay: 0s; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+  .delay-6 { animation-delay: 0.6s; }
+  .delay-7 { animation-delay: 0.7s; }
+  .delay-8 { animation-delay: 0.8s; }
+  .delay-9 { animation-delay: 0.9s; }
+  .delay-10 { animation-delay: 1s; }
+}
+
+@layer components {
+  .hover-lift {
+    @apply transition-all duration-300 hover:transform hover:-translate-y-2 hover:shadow-xl;
+  }
+}
+/* hide-scrollbar.css */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE & Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+html {
+  scrollbar-gutter: stable;
+}
+
+html body[data-scroll-locked] {
+  overflow-y: scroll !important;
+  margin-right: 0 !important;
+}
+
+.agent-response-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+.agent-response-scroll {
+  -ms-overflow-style: none;  /* IE и Edge */
+  scrollbar-width: none;      /* Firefox */
+}
