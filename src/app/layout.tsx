@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { satoshi } from "./fonts";
 
 export const metadata: Metadata = {
-  title: "Zaytra.ai",
+  title: "HealPlant.AI",
   description: "Your Bridge to the World's Markets",
 };
 

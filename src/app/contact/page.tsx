@@ -166,8 +166,8 @@ const Contact = () => {
 
       if (response.ok) {
         // Success - show success message
-        toast.success("Message sent successfully!", {
-          description: "We'll get back to you soon.",
+        toast.success("Message received 🌿", {
+          description: "Plant.AI support will reply soon.",
         });
 
         // Reset form to empty state
@@ -176,7 +176,7 @@ const Contact = () => {
           email: '',
           company: '',
           phone: '',
-          service: '',
+          service: undefined,
           message: '',
         });
       } else {
@@ -218,16 +218,16 @@ const Contact = () => {
             <div className="flex md:justify-end items-center justify-center space-x-4 my-6">
 
               <p className="text-xl uppercase text-white font-bold tracking-wide [text-shadow:1px_1px_2px_black]">
-                You create. We scale. Join Zaytra.
+                AI for Healthy Plants.
               </p>
 
             </div>
 
             <div className="space-y-4 md:text-right animate-fade-in-up">
               <h1 className=" text-4xl lg:text-6xl font-semibold leading-tight text-black">
-                Let&apos;s Start Your
+                Let&apos;s Grow
                 <span className="block text-3xl lg:text-5xl bg-clip-text drop-shadow-sm">
-                  Global Journey
+                  Healthier Plants
                 </span>
               </h1>
               <p className="inline-block text-xl border-b-2 border-white pb-1 uppercase text-white font-bold tracking-wide [text-shadow:1px_1px_2px_black]">
@@ -253,7 +253,7 @@ const Contact = () => {
                     {[
                       {
                         icon: MapPin,
-                        title: 'Office Location',
+                        title: 'Location',
                         details: ['Tashkent, Uzbekistan'],
                       },
                       {
@@ -263,15 +263,14 @@ const Contact = () => {
                       },
                       {
                         icon: Mail,
-                        title: 'Email Addresses',
-                        details: ['dev@zaytra.ai', 'tawneyk@zaytra.ai'],
+                        title: 'Email Adress',
+                        details: ['support@healplant.ai'],
                       },
                       {
                         icon: Clock,
-                        title: 'Business Hours',
+                        title: 'Support Hours',
                         details: [
                           'Mon-Fri: 9:00 AM - 6:00 PM (GMT+5)',
-                          'Sat: 10:00 AM - 2:00 PM (GMT+5)',
                         ],
                       },
                     ].map((item, index) => (
@@ -300,19 +299,21 @@ const Contact = () => {
                       href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1rg4TOS2A6ZBwxCNsTekCavRGrw5Zckt4yujmekISbEpd8hf9ER--clf0BNO54B4-vrt6n1wkf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1"
+
                     >
-                      <Button variant="default" className="rounded-full ring-2 w-full justify-start cursor-pointer">
+                      <Button variant="default" className="rounded-full ring-2 w-full  justify-center cursor-pointer">
                         <Globe className="w-4 h-4 mr-2" />
-                        Schedule Video Call
+                        Try Demo
                       </Button>
                     </Link>
-                    <a href="/docs/Zaytra.ai_About_us.pdf" download="Zaytra.ai_About_us.pdf">
-                      <Button variant="outline" className="rounded-full ring-2 w-full justify-start cursor-pointer">
+                    <Link
+                      href="/docs/Zaytra.ai_About_us.pdf"
+                      download="Zaytra.ai_About_us.pdf">
+                      <Button variant="outline" className="rounded-full ring-2 w-full justify-center cursor-pointer">
                         <CheckCircle className="w-4 h-4 mr-2" />
-                        Download Company Brochure
+                        Download
                       </Button>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -323,10 +324,9 @@ const Contact = () => {
             <div className="lg:col-span-2 h-full ">
               <Card className="ring-2 shadow-xl bg-card text-card-foreground">
                 <CardHeader>
-                  <CardTitle className="text-2xl">Send Us a Message</CardTitle>
+                  <CardTitle className="text-2xl">Contact Plant.AI</CardTitle>
                   <p className="text-muted-foreground">
-                    Fill out the form below and we&apos;ll get back to you within 24
-                    hours.
+                    Have questions about plant scanning or AI diagnostics? Send us a message and our team will reply soon.
                   </p>
                 </CardHeader>
                 <CardContent>
@@ -340,7 +340,7 @@ const Contact = () => {
                           className='rounded-2xl'
                           required
                           type="text"
-                          placeholder="Enter your full name"
+                          placeholder="Name"
                           value={formData.name}
                           onChange={(e) =>
                             handleChange('name', e.target.value)
@@ -366,20 +366,6 @@ const Contact = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium">
-                          Company Name
-                        </label>
-                        <Input
-                          className='rounded-2xl'
-                          type="text"
-                          placeholder="Your company name"
-                          value={formData.company}
-                          onChange={(e) =>
-                            handleChange('company', e.target.value)
-                          }
-                        />
-                      </div>
-                      <div className="space-y-2">
                         <label className="text-sm font-medium ">
                           Phone Number *
                         </label>
@@ -394,9 +380,7 @@ const Contact = () => {
                           }
                         />
                       </div>
-                    </div>
-
-                    <div className="space-y-2">
+                      <div className="space-y-2">
                       <label className="text-sm font-medium ">
                         Service Interest
                       </label>
@@ -406,24 +390,28 @@ const Contact = () => {
                           handleChange('service', value)
                         }
                       >
-                        <SelectTrigger className="rounded-2xl">
+                        <SelectTrigger className="rounded-2xl w-full">
                           <SelectValue placeholder="Select a service you're interested in" />
                         </SelectTrigger>
-                        <SelectContent className="bg-popover text-popover-foreground border-border">
-                          <SelectItem value="vendor">
-                            Become a Vendor
+                        <SelectContent>
+                          <SelectItem value="app-support">
+                            App Support
                           </SelectItem>
-                          <SelectItem value="marketing">
-                            Marketing Services
+                          <SelectItem value="plant-diagnosis">
+                            Plant Diagnosis Question
+                          </SelectItem>
+                          <SelectItem value="bug-report">
+                            Bug Report
                           </SelectItem>
                           <SelectItem value="partnership">
-                            Partnership Opportunity
+                            Partnership / API
                           </SelectItem>
-                          <SelectItem value="custom-request">
-                            Custom Request
+                          <SelectItem value="other">
+                            Other
                           </SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
                     </div>
 
                     <div className="space-y-2">
@@ -431,7 +419,7 @@ const Contact = () => {
                       <Textarea
                         required
                         rows={5}
-                        placeholder="Tell us about your business, target markets, and how we can help you..."
+                        placeholder="Describe your plant issue, question, or request…"
                         value={formData.message}
                         onChange={(e) =>
                           handleChange('message', e.target.value)
@@ -467,60 +455,6 @@ const Contact = () => {
       </section>
       {/* FAQ */}
       <Faq />
-      {/*  <section className="py-16 bg-muted animate-fade-in-up">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl font-bold">Frequently Asked Questions</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Common questions about our services and how we can help your
-              business expand into MEA markets.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                question: 'How long does it take to enter a new MEA market?',
-                answer:
-                  'Typically 3-6 months depending on the complexity of your product and target market. We provide a detailed timeline during our initial consultation.',
-              },
-              {
-                question: 'Do you provide local language support?',
-                answer:
-                  'Yes, we offer content localization in Arabic, French, and other regional languages as part of our comprehensive packages.',
-              },
-              {
-                question: 'What makes UzBridge different from other agencies?',
-                answer:
-                  'We specialize exclusively in Uzbek tech companies and MEA markets, providing deep cultural understanding and proven local partnerships.',
-              },
-              {
-                question: 'Can you help with regulatory compliance?',
-                answer:
-                  'Absolutely. Our team includes local experts who guide you through regulatory requirements and compliance procedures in each target market.',
-              },
-              {
-                question: "What's included in the marketplace listing?",
-                answer:
-                  'Professional company profile, product showcase, lead generation tools, analytics dashboard, and direct buyer connections.',
-              },
-              {
-                question: 'Do you offer flexible payment terms?',
-                answer:
-                  'Yes, we offer various payment options including monthly subscriptions, quarterly packages, and custom enterprise agreements.',
-              },
-            ].map((faq, index) => (
-              <Card key={index} className="hover-lift cursor-default transition-transform duration-200 ">
-                <CardContent className="p-6 space-y-3">
-                  <h3 className="font-bold text-lg">{faq.question}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
       <Footer />
     </div>
   );

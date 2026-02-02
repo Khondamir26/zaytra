@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "next-themes"
+
 import React, { useEffect, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from "embla-carousel-autoplay"
@@ -52,7 +52,6 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
-  const { theme } = useTheme()
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const intervalRef = useRef<number | null>(null);
 
@@ -115,7 +114,7 @@ const Testimonials = () => {
 
 
         <Carousel
-          className="hidden relative overflow-hidden xl:overflow-visible"
+          className="relative overflow-hidden xl:overflow-visible"
           opts={{ loop: true }}
           plugins={[Autoplay({ delay: 3000, stopOnInteraction: false })]} >
           <div ref={emblaRef}>
@@ -163,54 +162,39 @@ const Testimonials = () => {
         </Carousel>
 
         {/* Trust indicators */}
-        <div className="mt-16 text-center ">
-          <p className="text-muted-foreground font-bold mb-6 uppercase">Brands that trust us</p>
+        <div className="mt-16 text-center">
+          <p className="text-muted-foreground font-bold mb-6 uppercase">
+            Brands that trust us
+          </p>
+
           <div className="flex flex-wrap justify-center gap-18 items-center">
             {[
-              {
-                src:
-                  theme === "dark"
-                    ? "/icons/turan-dark.png"
-                    : "/icons/turan-light.png",
-                alt: "TuranSecurity",
-              },
-              {
-                src:
-                  theme === "dark"
-                    ? "/icons/fintech-dark.png"
-                    : "/icons/fintech-light.png",
-                alt: "Fintech",
-              },
-              {
-                src:
-                  theme === "dark"
-                    ? "/icons/it-park-dark.png"
-                    : "/icons/it-park-light.png",
-                alt: "IT-PARK",
-              },
-              {
-                src:
-                  theme === "dark"
-                    ? "/icons/praaktisgo-dark.png"
-                    : "/icons/praaktisgo-light.png",
-                alt: "Praaktisgo",
-              },
-              {
-                src:
-                  theme === "dark"
-                    ? "/icons/kpi-dark.png"
-                    : "/icons/kpi-light.png",
-                alt: "KPI",
-              },
+              { light: "/icons/turan-light.png", dark: "/icons/turan-dark.png", alt: "TuranSecurity" },
+              { light: "/icons/fintech-light.png", dark: "/icons/fintech-dark.png", alt: "Fintech" },
+              { light: "/icons/it-park-light.png", dark: "/icons/it-park-dark.png", alt: "IT-PARK" },
+              { light: "/icons/praaktisgo-light.png", dark: "/icons/praaktisgo-dark.png", alt: "Praaktisgo" },
+              { light: "/icons/kpi-light.png", dark: "/icons/kpi-dark.png", alt: "KPI" },
             ].map((logo, index) => (
-              <div key={index} className="transition-transform hover:scale-105 ">
+              <div key={index} className="transition-transform hover:scale-105">
+
+                {/* light */}
                 <Image
-                  src={logo.src}
+                  src={logo.light}
                   alt={logo.alt}
                   width={120}
                   height={105}
-                  className="object-contain"
+                  className="object-contain dark:hidden"
                 />
+
+                {/* dark */}
+                <Image
+                  src={logo.dark}
+                  alt={logo.alt}
+                  width={120}
+                  height={105}
+                  className="object-contain hidden dark:block"
+                />
+
               </div>
             ))}
           </div>

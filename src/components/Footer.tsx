@@ -65,22 +65,21 @@ const Footer = () => {
           <div className="space-y-6 text-muted dark:text-white">
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/icons/zaytra_ai.png" // путь к логотипу
-                alt="Zaytra.AI Logo"
-                width={32}
-                height={32}
-                className="object-contain"
+                src="/icons/healplant.png" // путь к логотипу
+                alt="HealPlant.AI Logo"
+                width={65}
+                height={65}
+                className=" w-10 h-10 object-contain"
               />
-              <span className="text-lg text-muted font-semibold dark:text-white [text-shadow:1px_1px_2px_black]">Zaytra.ai</span>
+              <span className="text-lg text-muted font-semibold dark:text-white [text-shadow:1px_1px_2px_black]">Plant.ai</span>
             </Link>
             <p className="leading-relaxed text-muted dark:text-white">
-              Empowering tech companies to scale globally by offering a
-              curated marketplace and market entry support in the Middle East
-              and Africa.
+              Plant.AI helps people identify plants, detect diseases, and improve plant care using AI-powered diagnostics and smart guidance.
+
             </p>
             <div className="flex space-x-4 ">
               <Link
-                href="https://www.linkedin.com/company/zaytra-ai/"
+                href="https://www.linkedin.com/company/khondamir-tuychiev/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -140,14 +139,14 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-6 text-muted dark:text-white">
-            <h3 className="text-lg font-semibold [text-shadow:1px_1px_2px_black]">Quick Links</h3>
+            <h3 className="text-lg font-semibold [text-shadow:1px_1px_2px_black]">Product</h3>
             <div className="space-y-2">
               {[
-                { label: "Marketplace", href: "/marketplace" },
-                { label: "Marketing", href: "/services" },
-                { label: "About Us", href: "/about" },
+                { label: "Plant Scanner", href: "/marketplace" },
+                { label: "Features", href: "/services" },
+                { label: "How It Works", href: "/vendor-application" },
+                { label: "About HealPlant.AI", href: "/about" },
                 { label: "Contact", href: "/contact" },
-                { label: "Vendor Application", href: "/vendor-application" },
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -162,21 +161,22 @@ const Footer = () => {
 
           {/* Contact */}
           <div className="space-y-6 text-muted dark:text-white">
-            <h3 className="text-lg font-semibold [text-shadow:1px_1px_2px_black]">Get in Touch</h3>
+            <h3 className="text-lg font-semibold [text-shadow:1px_1px_2px_black]">Support</h3>
             <div className="space-y-4 text-muted dark:text-white">
               <div className="space-y-2 items-center">
                 <div className="mail-zaytra flex items-center space-x-3">
-                  <Link href="mailto:dev@zaytra.ai">
+                  <Link href="mailto:support@healplant.ai
+">
                     <Mail className="w-5 h-5 " />
                   </Link>
-                  <Link href="mailto:dev@zaytra.ai"><span>dev@zaytra.ai</span>
+                  <Link href="mailto:support@healplant.ai"><span>support@healplant.ai</span>
                   </Link>
                 </div>
-                <div className="mail-tawney flex items-center space-x-3">
-                  <Link href="mailto:tawneyk@zaytra.ai">
+                <div className="mail-khonda flex items-center space-x-3">
+                  <Link href="mailto:support@healplant.ai">
                     <Mail className="w-5 h-5 " />
                   </Link>
-                  <Link href="mailto:tawneyk@zaytra.ai"><span>tawneyk@zaytra.ai</span>
+                  <Link href="mailto:khondamirtuychiev@gmail.com"><span>khondamirtuychiev@gmail.com</span>
 
                   </Link>
                 </div>
@@ -208,7 +208,7 @@ const Footer = () => {
           <div className="space-y-6 text-muted dark:text-white">
             <h4 className="text-lg font-semibold [text-shadow:1px_1px_2px_black]">Newsletter</h4>
             <p className="text-sm text-muted dark:text-white">
-              Get the latest updates on <br />MEA market opportunities
+              Get plant care tips and<br />Plant.AI feature updates
             </p>
             <form className="flex space-x-2" onSubmit={handleSubscribe}>
               <Input
@@ -237,7 +237,7 @@ const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-muted text-sm dark:text-white [text-shadow:1px_1px_2px_black]">
-              © 2025 Zaytra.ai. All rights reserved.
+              © 2026 Plant.ai. All rights reserved.
             </div>
             <div className="flex space-x-6 mt-4 md:mt-0 [text-shadow:1px_1px_2px_black]">
               {[

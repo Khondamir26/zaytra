@@ -14,7 +14,6 @@ import Footer from "@/components/Footer";
 import ProblemSolution from './ProblemSolution';
 import Solutions from './Solutions';
 import Testimonials from './Testimonials';
-import Scene3D from './Scene3D';
 import StarBackground from './StarBackground';
 import HeroImage from "@/components/HeroImage";
 

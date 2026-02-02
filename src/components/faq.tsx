@@ -9,36 +9,37 @@ import StarBackground from "./StarBackground"
 export function Faq() {
     const faqs = [
         {
-            question: 'How long does it take to enter a new MEA market?',
+            question: 'What is Plant.AI?',
             answer:
-                'Typically 3-6 months depending on the complexity of your product and target market. We provide a detailed timeline during our initial consultation.',
+                'HealPlant.AI is an AI-powered plant assistant that identifies plant species and detects possible diseases from photos, then provides care and treatment recommendations.',
         },
         {
-            question: 'Do you provide local language support?',
+            question: 'How does the plant scan work?',
             answer:
-                'Yes, we offer content localization in Arabic, French, and other regional languages as part of our comprehensive packages.',
+                'You upload a photo of your plant, and our AI analyzes the image to identify the plant and possible health problems within seconds.',
         },
         {
-            question: 'What makes Zaytra.ai different from other agencies?',
+            question: 'Can Plant.AI detect plant diseases?',
             answer:
-                'We specialize in helping emerging tech companies expand into MEA markets, combining deep cultural insight with proven local partnerships to deliver scalable growth strategies.',
+                'Yes. It can recognize many common issues such as pests, fungal infections, overwatering, and nutrient deficiencies and suggest what to do next.',
         },
         {
-            question: 'Can you help with regulatory compliance?',
+            question: 'How accurate are the results?',
             answer:
-                'Absolutely. Our team includes local experts who guide you through regulatory requirements and compliance procedures in each target market.',
+                'Our AI models are trained on large plant datasets and provide high accuracy for common plants and conditions, but results are guidance and not a replacement for a professional botanist.',
         },
         {
-            question: "What's included in the marketplace listing?",
+            question: 'Is Plant.AI free to use?',
             answer:
-                'Professional company profile, product showcase, lead generation tools, analytics dashboard, and direct buyer connections.',
+                'A free version with limited scans is available. Premium plans unlock unlimited scans, advanced diagnostics, and detailed care features.',
         },
         {
-            question: 'Do you offer flexible payment terms?',
+            question: 'Who is Plant.AI for?',
             answer:
-                'Yes, we offer various payment options including monthly subscriptions, quarterly packages, and custom enterprise agreements.',
+                'It is designed for everyone — from beginners and home plant owners to hobby gardeners and small growers who want simple, smart plant care help.',
         },
     ]
+
 
     return (
         <section className="py-16 bg-gradient-to-b from-[#00C3C1]/65 to-white animate-fade-in-up">
@@ -47,8 +48,7 @@ export function Faq() {
                 <div className="text-center space-y-4 mb-16">
                     <h2 className="text-3xl font-bold dark:[text-shadow:1px_1px_2px_black]">Frequently Asked Questions</h2>
                     <p className="max-w-2xl mx-auto dark:[text-shadow:1px_1px_2px_black]">
-                        Common questions about our services and how we can help your
-                        business expand into MEA markets.
+                       Quick answers about using HealPlant.AI to identify and heal your plants.
                     </p>
                 </div>
 

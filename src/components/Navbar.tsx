@@ -5,16 +5,10 @@ import Link from "next/link";
 import {
     Moon,
     Sun,
-    BarChart3,
-    Building2,
-    MessageSquare,
     ChevronDown,
     Check,
     Laptop2,
     Menu,
-    LayoutDashboard,
-    BookOpen,
-    CreditCard
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -28,11 +22,10 @@ import {
 
 import {
     NavigationMenu,
-    NavigationMenuContent,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
-    NavigationMenuTrigger,
+
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
@@ -42,67 +35,6 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-
-// Optional demo content:
-const components = [
-    {
-        title: "AI Tools",
-        href: "/ai-tools",
-        description: "Manage your customers efficiently.",
-        icon: BarChart3,
-    },
-    {
-        title: "Consultation",
-        href: "/contact",
-        description: "Free strategy session.",
-        icon: MessageSquare,
-    },
-];
-const MarketingComponents = [
-    {
-        title: "Pricing",
-        href: "/services",
-        description: "Fair prices, clear options.",
-        icon: CreditCard,
-    },
-    {
-        title: "Case Studies",
-        href: "/cases",
-        description: "Explore real-world success stories.",
-        icon: BookOpen,
-    },
-
-
-];
-
-const vendorComponents = [
-    {
-        title: "Vendor Portal",
-        href: "/app-builder",
-        description: "Access and manage your vendor dashboard.",
-        icon: LayoutDashboard,
-    },
-    // {
-    //     title: "Product Listing",
-    //     href: "/app-builder",
-    //     description: "Add, update, and manage your offerings.",
-    //     icon: BarChart3,
-    // },
-    // {
-    //     title: "Order Management",
-    //     href: "/app-builder",
-    //     description: "Track orders, shipments, and returns.",
-    //     icon: Users,
-    // },
-    {
-        title: "Vendor Application",
-        href: "/vendor-application",
-        description: "Apply to list your product on Zaytra.ai Marketplace.",
-        icon: Building2,
-    },
-];
-
-
 
 const Navbar = () => {
     const { resolvedTheme, setTheme } = useTheme();
@@ -180,34 +112,40 @@ const Navbar = () => {
                 {/* LEFT:Sidebar Trigger */}
                 <SidebarTrigger className="hidden" />
             </div>
-            <div className="container mx-auto flex items-center justify-between px-4 py-2 ">
+            <div className="container mx-auto flex items-center justify-between px-3 py-2 ">
                 {/* Logo */}
                 <div className="md:flex items-center gap-4 flex-shrink-0">
                     <Link href="/" className="flex items-center gap-2">
                         <Image
-                            src="/icons/zaytra_ai.png" // путь к логотипу
-                            alt="Zaytra.AI Logo"
-                            width={32}
-                            height={32}
-                            className="object-contain"
+                            src="/icons/healplant.png" // путь к логотипу
+                            alt="Plant.AI Logo"
+                            width={65}
+                            height={65}
+                            className="h-10 w-10 object-contain"
                         />
-                        <span className="text-lg font-bold tracking-wide  ">Zaytra.ai</span>
+                        <span className="text-lg font-bold tracking-wide  ">Plant.ai</span>
                     </Link>
                 </div>
                 {/* CENTER: Navigation Menu */}
                 <div className="hidden xl:flex flex-1 justify-center ">
                     <NavigationMenu >
                         <NavigationMenuList>
-                            {/* Marketplace */}
+                            {/* Features */}
                             <NavigationMenuItem>
                                 <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/marketplace" className={navigationMenuTriggerStyle()}>Marketplace</Link>
+                                    <Link href="/marketplace" className={navigationMenuTriggerStyle()}>Features</Link>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
-                            {/* App Builder */}
+                            {/* How It Works */}
                             <NavigationMenuItem>
                                 <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/app-builder" className={navigationMenuTriggerStyle()}>App Builder</Link>
+                                    <Link href="/app-builder" className={navigationMenuTriggerStyle()}>How It Works</Link>
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
+                            {/* Pricing */}
+                            <NavigationMenuItem >
+                                <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
+                                    <Link href="/services" className={navigationMenuTriggerStyle()}>Pricing</Link>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
                             {/* About */}
@@ -216,56 +154,17 @@ const Navbar = () => {
                                     <Link href="/about" className={navigationMenuTriggerStyle()}>About</Link>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
-                            {/* Marketing */}
-                            <NavigationMenuItem>
-                                <NavigationMenuTrigger className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" >Marketing</NavigationMenuTrigger>
-                                <NavigationMenuContent>
-                                    <ul className="grid gap-2 p-4 w-[500px] md:grid-cols-2 cursor-pointer">
-                                        {MarketingComponents.map((item) => (
-                                            <ListItem key={item.href} href={item.href} icon={item.icon} title={item.title}>
-                                                {item.description}
-                                            </ListItem>
-                                        ))}
-                                    </ul>
-                                </NavigationMenuContent>
-                            </NavigationMenuItem>
-                            {/* <NavigationMenuItem>
+                            {/* Blog */}
+                            <NavigationMenuItem >
                                 <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/services" className={navigationMenuTriggerStyle()}>Marketing</Link>
+                                    <Link href="/blog" className={navigationMenuTriggerStyle()}>Blog</Link>
                                 </NavigationMenuLink>
-                            </NavigationMenuItem> */}
-                            {/* Contact */}
-                            {/* <NavigationMenuItem>
-                                <NavigationMenuLink className="rounded-xl p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/contact" className={navigationMenuTriggerStyle()}>Contact</Link>
-                                </NavigationMenuLink>
-                            </NavigationMenuItem> */}
-
-                            {/* Vendor */}
-                            <NavigationMenuItem>
-                                <NavigationMenuTrigger className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" >Vendors</NavigationMenuTrigger>
-                                <NavigationMenuContent>
-                                    <ul className="grid gap-2 p-4 w-[500px] md:grid-cols-2 cursor-pointer">
-                                        {vendorComponents.map((item) => (
-                                            <ListItem key={item.href} href={item.href} icon={item.icon} title={item.title}>
-                                                {item.description}
-                                            </ListItem>
-                                        ))}
-                                    </ul>
-                                </NavigationMenuContent>
                             </NavigationMenuItem>
-                            {/* Solutions */}
-                            <NavigationMenuItem>
-                                <NavigationMenuTrigger className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" >Solutions</NavigationMenuTrigger>
-                                <NavigationMenuContent>
-                                    <ul className="grid gap-2 p-4 w-[500px] md:grid-cols-2 cursor-pointer">
-                                        {components.map((item) => (
-                                            <ListItem key={item.href} href={item.href} icon={item.icon} title={item.title}>
-                                                {item.description}
-                                            </ListItem>
-                                        ))}
-                                    </ul>
-                                </NavigationMenuContent>
+                            {/* Support */}
+                            <NavigationMenuItem >
+                                <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
+                                    <Link href="/contact" className={navigationMenuTriggerStyle()}>Support</Link>
+                                </NavigationMenuLink>
                             </NavigationMenuItem>
                         </NavigationMenuList>
                     </NavigationMenu>
@@ -440,7 +339,7 @@ const Navbar = () => {
                                                 { label: "AI Tools", href: "/ai-tools" },
                                                 { label: "About", href: "/about" },
                                                 { label: "Contact", href: "/contact" },
-                                                
+
                                             ].map((item) => (
                                                 <Link
                                                     key={item.href}
@@ -467,6 +366,7 @@ const Navbar = () => {
 };
 
 // Helper component
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function ListItem({
     title,
     children,
