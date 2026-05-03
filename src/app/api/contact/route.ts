@@ -1,121 +1,79 @@
-import { NextRequest, NextResponse } from 'next/server';
-import {connectDB} from '@/lib/mongodb';
-import Contact from '@/models/Contact'; // Fixed case sensitivity
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
-  console.log('🚀 Contact API called');
-  
-  try {
-    // Connect to database
-    console.log('📡 Connecting to database...');
-    await connectDB();
-    console.log('✅ Database connected successfully');
-
-    // Parse request body
-    console.log('📝 Parsing request body...');
-    const body = await request.json();
-    console.log('📋 Request body:', { ...body, message: body.message?.substring(0, 50) + '...' });
-    
-    const { name, email, company, phone, service, message } = body;
-
-    // Validate required fields
-    if (!name || !email || !message) {
-      console.log('❌ Validation failed: Missing required fields');
-      return NextResponse.json(
-        { error: 'Name, email, and message are required' },
-        { status: 400 }
-      );
-    }
-
-    // Create new contact
-    console.log('👤 Creating new contact...');
-    const contact = new Contact({
-      name,
-      email,
-      company,
-      phone,
-      service,
-      message,
-    });
-
-    // Save to database
-    console.log('💾 Saving to database...');
-    const savedContact = await contact.save();
-    console.log('✅ Contact saved successfully:', savedContact._id);
-
-    return NextResponse.json(
-      {
-        message: 'Contact form submitted successfully',
-        contact: {
-          id: savedContact._id,
-          name: savedContact.name,
-          email: savedContact.email,
-          createdAt: savedContact.createdAt,
-        },
-      },
-      { status: 201 }
-    );
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    console.error('💥 API Error:', error);
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-
-    // Handle validation errors
-    if (error.name === 'ValidationError') {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const errors = Object.values(error.errors).map((err: any) => err.message);
-      console.log('🚫 Validation errors:', errors);
-      return NextResponse.json(
-        { error: 'Validation failed', details: errors },
-        { status: 400 }
-      );
-    }
-
-    // Handle duplicate email (if you add unique constraint)
-    if (error.code === 11000) {
-      console.log('🚫 Duplicate email error');
-      return NextResponse.json(
-        { error: 'Email already exists' },
-        { status: 409 }
-      );
-    }
-
-    // Handle connection errors
-    if (error.name === 'MongoNetworkError' || error.name === 'MongooseServerSelectionError') {
-      console.log('🌐 Database connection error');
-      return NextResponse.json(
-        { error: 'Database connection failed' },
-        { status: 503 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
-      { status: 500 }
-    );
-  }
+interface ContactPayload {
+  name: string;
+  email: string;
+  company?: string;
+  phone?: string;
+  service?: string;
+  message: string;
 }
 
-export async function GET() {
-  try {
-    console.log('📊 GET contacts called');
-    await connectDB();
-    
-    const contacts = await Contact.find({})
-      .sort({ createdAt: -1 })
-      .limit(50)
-      .select('-__v');
+async function sendToTelegram(data: ContactPayload) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) { console.error("❌ Telegram env vars missing"); return; }
 
-    console.log('✅ Retrieved contacts:', contacts.length);
-    return NextResponse.json({ contacts });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    console.error('💥 GET Error:', error);
+  const text =
+    `📬 *New Lead — Binova Labs*\n\n` +
+    `👤 *Name:* ${data.name}\n` +
+    `📧 *Email:* ${data.email}\n` +
+    (data.phone    ? `📞 *Phone:* ${data.phone}\n`     : "") +
+    (data.company  ? `🏢 *Company:* ${data.company}\n` : "") +
+    (data.service  ? `🛠 *Service:* ${data.service}\n`  : "") +
+    `\n💬 *Message:*\n${data.message}`;
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: "Markdown" }),
+  });
+}
+
+async function sendToGoogleSheets(data: ContactPayload) {
+  const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+  if (!webhookUrl) { console.error("❌ Google Sheets env var missing"); return; }
+
+  const params = new URLSearchParams({
+    name:    data.name,
+    email:   data.email,
+    phone:   data.phone    ?? "",
+    company: data.company  ?? "",
+    service: data.service  ?? "",
+    message: data.message,
+    date:    new Date().toISOString(),
+  });
+
+  await fetch(`${webhookUrl}?${params.toString()}`, {
+    method: "GET",
+    redirect: "follow",
+  });
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body: ContactPayload = await request.json();
+    const { name, email, message } = body;
+
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { message: "Name, email, and message are required." },
+        { status: 400 }
+      );
+    }
+
+    await Promise.allSettled([
+      sendToTelegram(body),
+      sendToGoogleSheets(body),
+    ]);
+
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { message: "Message sent successfully." },
+      { status: 200 }
+    );
+  } catch {
+    return NextResponse.json(
+      { message: "Internal server error." },
       { status: 500 }
     );
   }

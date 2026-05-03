@@ -1,399 +1,220 @@
 "use client";
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-    Moon,
-    Sun,
-    ChevronDown,
-    Check,
-    Laptop2,
-    Menu,
-} from "lucide-react";
+import Image from "next/image";
+import { Moon, Sun, ChevronDown, Check, Menu } from "lucide-react";
+import { useTheme } from "next-themes";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-
-    navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-
-import { useTheme } from "next-themes";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { usePathname } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
-import Image from "next/image";
+import Logo from "@/components/Logo";
+import { useLanguage } from "@/context/LanguageContext";
+import type { Language } from "@/lib/i18n";
+
+const languages: { code: Language; label: string; icon: string }[] = [
+  { code: "EN", label: "English",    icon: "/flags/us.png" },
+  { code: "UZ", label: "O'zbekcha", icon: "/flags/uz.png" },
+  { code: "RU", label: "Русский",   icon: "/flags/ru.png" },
+];
+
+const navHrefs = [
+  "/#services",
+  "/#how-it-works",
+  "/#work",
+  "/#team",
+  "/#contact",
+];
 
 const Navbar = () => {
-    const { resolvedTheme, setTheme } = useTheme();
-    const [language, setLanguage] = React.useState("EN");
-    const pathname = usePathname();
-    const [open, setOpen] = React.useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [navbarHeight, setNavbarHeight] = useState(0);
-    const navbarRef = useRef<HTMLElement>(null);
+  const { resolvedTheme, setTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
+  const pathname = usePathname();
+  const [open, setOpen] = React.useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeLink, setActiveLink] = React.useState<string | null>(null);
 
-    // ПЕРВЫЙ useEffect - для высоты навбара
-    useEffect(() => {
-        const updateNavbarHeight = () => {
-            if (navbarRef.current) {
-                const height = navbarRef.current.offsetHeight;
-                setNavbarHeight(height);
-                document.documentElement.style.setProperty('--navbar-height', `${height}px`);
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-                // Добавляем padding-top к body для компенсации фиксированного навбара
-                document.body.style.paddingTop = `${height}px`;
-            }
-        };
+  const toggleTheme = () =>
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
 
-        // Сразу устанавливаем приблизительную высоту до измерения
-        if (navbarHeight === 0) {
-            document.body.style.paddingTop = '64px'; // примерная высота навбара
-        }
+  const currentLang = languages.find((l) => l.code === language) ?? languages[0];
+  const isActive = (path: string) =>
+    activeLink === path || (!path.startsWith("/#") && pathname === path);
 
-        // Точное измерение после рендера
-        updateNavbarHeight();
+  const navLinks = [
+    { label: t.nav.services, href: navHrefs[0] },
+    { label: t.nav.process,  href: navHrefs[1] },
+    { label: t.nav.work,     href: navHrefs[2] },
+    { label: t.nav.team,     href: navHrefs[3] },
+    { label: t.nav.contact,  href: navHrefs[4] },
+  ];
 
-        // Дополнительная проверка через requestAnimationFrame
-        requestAnimationFrame(updateNavbarHeight);
+  return (
+    <nav
+      className={`fixed top-0 z-50 w-full bg-[#0B1F3A] transition-shadow duration-300 ${
+        isScrolled ? "shadow-lg shadow-black/20" : ""
+      }`}
+    >
+      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 py-4">
 
-        return () => {
-            // Очищаем padding при размонтировании компонента
-            document.body.style.paddingTop = '0px';
-        };
-    }, [navbarHeight]);
+        <Logo />
 
-    // ВТОРОЙ useEffect - для скролла
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 10); // change threshold if needed
-        };
+        {/* Desktop nav links */}
+        <div className="hidden lg:flex flex-1 justify-center items-center gap-1">
+          {navLinks.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setActiveLink(item.href)}
+              className={`font-mono px-3 xl:px-4 py-2 text-sm tracking-wide font-normal transition-colors duration-200 underline-offset-4 decoration-[#00C3C1] ${
+                isActive(item.href)
+                  ? "text-white underline"
+                  : "text-white/70 hover:text-white hover:underline"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
 
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+        {/* Right controls */}
+        <div className="flex items-center gap-2 sm:gap-3">
 
-    const isActive = (path: string) => pathname === path;
+          {/* Language selector (desktop) */}
+          <div className="hidden lg:block">
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="rounded-full gap-1 cursor-pointer text-white/70 hover:text-white hover:bg-white/10">
+                  <Image src={currentLang.icon} alt={currentLang.code} width={20} height={15} />
+                  <span className="font-mono text-sm tracking-wide">{currentLang.code}</span>
+                  <ChevronDown className="w-3 h-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => setLanguage(lang.code)}
+                    className="flex items-center justify-between cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Image src={lang.icon} alt={lang.label} width={20} height={15} />
+                      <span>{lang.label}</span>
+                    </div>
+                    {language === lang.code && <Check className="w-4 h-4 text-[#00C3C1]" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
-    const languages = [
-        { code: "EN", label: "English", icon: "/flags/us.png" },
-        { code: "UZ", label: "O‘zbekcha", icon: "/flags/uz.png" },
-        { code: "RU", label: "Русский", icon: "/flags/ru.png" },
-    ];
-    const currentLang = languages.find((l) => l.code === language) || languages[0];
-    return (
-        <nav
-            ref={navbarRef}
-            className={` flex items-center justify-between px-4 py-2 fixed top-0 w-full z-50
-                  duration-300 bg-background transition-shadow ${isScrolled
-                    ? 'shadow-lg'
-                    : ''
-                }`}
-            style={{
-                height: navbarHeight > 0 ? `${navbarHeight}px` : 'auto',
-                width: "-webkit-fill-available"
-            }}
+          {/* CTA button (desktop) */}
+          <div className="hidden lg:block">
+            <Link href="/#contact">
+              <Button size="sm" className="font-mono rounded-full px-4 cursor-pointer bg-[#00C3C1] hover:bg-[#00a8a6] text-[#0B1F3A] font-semibold border-0 tracking-wide">
+                {t.nav.cta}
+              </Button>
+            </Link>
+          </div>
 
-        >
+          {/* Theme toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full cursor-pointer text-white/70 hover:text-white hover:bg-white/10"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            <Sun className="h-4 w-4 dark:hidden" />
+            <Moon className="h-4 w-4 hidden dark:block" />
+          </Button>
 
-            <div className="flex items-center ">
-                {/* LEFT:Sidebar Trigger */}
-                <SidebarTrigger className="hidden" />
-            </div>
-            <div className="container mx-auto flex items-center justify-between px-3 py-2 ">
-                {/* Logo */}
-                <div className="md:flex items-center gap-4 flex-shrink-0">
-                    <Link href="/" className="flex items-center gap-2">
-                        <Image
-                            src="/icons/healplant.png" // путь к логотипу
-                            alt="Plant.AI Logo"
-                            width={65}
-                            height={65}
-                            className="h-10 w-10 object-contain"
-                        />
-                        <span className="text-lg font-bold tracking-wide  ">Plant.ai</span>
+          {/* Mobile hamburger */}
+          <div className="lg:hidden">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="cursor-pointer text-white/70 hover:text-white hover:bg-white/10">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-full max-w-xs sm:max-w-sm h-full overflow-y-auto p-6 bg-[#0B1F3A] text-white border-l border-white/10">
+                <div className="flex flex-col mt-8 space-y-6">
+
+                  <div className="flex justify-between items-center pt-2">
+                    <Link href="/#contact" onClick={() => setOpen(false)}>
+                      <Button size="sm" className="rounded-full px-4 cursor-pointer bg-[#00C3C1] hover:bg-[#00a8a6] text-[#0B1F3A] font-semibold border-0">
+                        {t.nav.cta}
+                      </Button>
                     </Link>
+                    <DropdownMenu modal={false}>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="rounded-full gap-1 cursor-pointer text-white/70">
+                          <Image src={currentLang.icon} alt={currentLang.code} width={20} height={15} />
+                          <span className="font-mono text-sm">{currentLang.code}</span>
+                          <ChevronDown className="w-3 h-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        {languages.map((lang) => (
+                          <DropdownMenuItem
+                            key={lang.code}
+                            onClick={() => setLanguage(lang.code)}
+                            className="flex items-center justify-between cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Image src={lang.icon} alt={lang.label} width={20} height={15} />
+                              <span>{lang.label}</span>
+                            </div>
+                            {language === lang.code && <Check className="w-4 h-4 text-[#00C3C1]" />}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  <div className="border-t border-white/10" />
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {navLinks.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => { setActiveLink(item.href); setOpen(false); }}
+                        className={`flex items-center justify-center rounded-xl px-4 py-3.5 text-sm font-medium transition-colors ${
+                          isActive(item.href)
+                            ? "bg-white/10 text-white"
+                            : "text-white/60 hover:text-white hover:bg-white/10"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+
                 </div>
-                {/* CENTER: Navigation Menu */}
-                <div className="hidden xl:flex flex-1 justify-center ">
-                    <NavigationMenu >
-                        <NavigationMenuList>
-                            {/* Features */}
-                            <NavigationMenuItem>
-                                <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/marketplace" className={navigationMenuTriggerStyle()}>Features</Link>
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                            {/* How It Works */}
-                            <NavigationMenuItem>
-                                <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/app-builder" className={navigationMenuTriggerStyle()}>How It Works</Link>
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                            {/* Pricing */}
-                            <NavigationMenuItem >
-                                <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/services" className={navigationMenuTriggerStyle()}>Pricing</Link>
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                            {/* About */}
-                            <NavigationMenuItem >
-                                <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/about" className={navigationMenuTriggerStyle()}>About</Link>
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                            {/* Blog */}
-                            <NavigationMenuItem >
-                                <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/blog" className={navigationMenuTriggerStyle()}>Blog</Link>
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                            {/* Support */}
-                            <NavigationMenuItem >
-                                <NavigationMenuLink className="hover:rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer" asChild>
-                                    <Link href="/contact" className={navigationMenuTriggerStyle()}>Support</Link>
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                        </NavigationMenuList>
-                    </NavigationMenu>
-                </div>
-                {/* RIGHT */}
-                <div className="items-center gap-4 ">
-                    <div className="flex items-center gap-4">
-                        {/* Language Selector */}
-                        <div className="hidden lg:flex items-center gap-2">
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
+              </SheetContent>
+            </Sheet>
+          </div>
 
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer"
-                                    >
-                                        <Image
-                                            src={currentLang.icon}
-                                            alt={currentLang.code}
-                                            width={32}
-                                            height={24}
-                                        />
-                                        <span className="ml-1">{currentLang.code}</span>
-                                        <ChevronDown className="w-3 h-3 ml-1" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-
-                                <DropdownMenuContent align="end" className="bg-background border shadow-md w-40">
-                                    {languages.map((lang) => (
-                                        <DropdownMenuItem
-                                            key={lang.code}
-                                            onClick={() => setLanguage(lang.code)}
-                                            className="flex items-center justify-between space-x-2 cursor-pointer hover:bg-muted"
-                                        >
-                                            <div className="flex items-center space-x-2">
-                                                <Image
-                                                    src={lang.icon}
-                                                    alt={lang.label}
-                                                    width={20}
-                                                    height={15}
-                                                    className=""
-                                                />
-                                                <span>{lang.label}</span>
-                                            </div>
-                                            {language === lang.code && <Check className="w-4 h-4 text-primary" />}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-
-                            <Link href="/login"  >
-                                <Button variant="default" size="sm" className="cursor-pointer rounded-full  ">
-                                    Sign In
-                                </Button>
-                            </Link>
-                            <Link href="/signup">
-                                <Button variant="ghost" size="sm" className="rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer  ">
-                                    Sign Up
-                                </Button>
-                            </Link>
-                        </div>
-                        {/* Theme Toggle */}
-                        <div className="xl:flex items-center gap-2">
-
-                            <DropdownMenu modal={false}>
-                                <DropdownMenuTrigger asChild>
-                                    <Button className="rounded-2xl" variant="outline" size="icon">
-                                        {/* Icon depends on actual theme */}
-                                        <Sun className="h-5 w-5 dark:hidden" />
-                                        <Moon className="h-5 w-5 hidden dark:block" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuItem onClick={() => setTheme("light")}>
-                                        <div className="flex items-center gap-2 w-full">
-                                            <Sun className="h-4 w-4" />
-                                            <span className="flex-1">Light</span>
-                                            {resolvedTheme === "light" && <Check className="h-4 w-4 text-primary" />}
-                                        </div>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => setTheme("dark")}>
-                                        <div className="flex items-center gap-2 w-full">
-                                            <Moon className="h-4 w-4" />
-                                            <span className="flex-1">Dark</span>
-                                            {resolvedTheme === "dark" && <Check className="h-4 w-4 text-primary" />}
-                                        </div>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => setTheme("system")}>
-                                        <div className="flex items-center gap-2 w-full">
-                                            <Laptop2 className="h-4 w-4" />
-                                            <span className="flex-1">System</span>
-                                            {resolvedTheme === "system" && <Check className="h-4 w-4 text-primary" />}
-                                        </div>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-                        {/* MOBILE MENU (only visible on mobile) */}
-                        <div className="flex items-center gap-2 xl:hidden">
-                            <Sheet open={open} onOpenChange={setOpen}>
-                                <SheetTrigger asChild>
-                                    <Button variant="ghost" size="sm">
-                                        <Menu className="w-full h-5" />
-                                    </Button>
-                                </SheetTrigger>
-                                <SheetContent side="right" className="!w-screen !h-screen p-6 bg-background text-foreground">
-                                    <div className="flex flex-col mt-8 space-y-6 h-full">
-                                        <div className="flex justify-between pt-2  items-center ">
-                                            <div className="flex justify-between space-x-2 items-center ">
-                                                <Link href="/login" onClick={() => setOpen(false)}>
-                                                    <Button variant="default" size='sm' className="rounded-full min-w-[85px]  ">Sign in</Button>
-                                                </Link>
-                                                <Link href="/signup" onClick={() => setOpen(false)}>
-                                                    <Button variant="outline" size='sm' className="rounded-full max-w-[85px] ">Sign Up</Button>
-                                                </Link>
-
-                                            </div>
-                                            <div className="">
-                                                <DropdownMenu modal={false}>
-                                                    <DropdownMenuTrigger asChild>
-
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer"
-                                                        >
-                                                            <Image
-                                                                src={currentLang.icon}
-                                                                alt={currentLang.code}
-                                                                width={32}
-                                                                height={24}
-                                                            />
-                                                            <span className="ml-1">{currentLang.code}</span>
-                                                            <ChevronDown className="w-3 h-3 ml-1" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-
-                                                    <DropdownMenuContent align="end" className="bg-background border shadow-md w-40">
-                                                        {languages.map((lang) => (
-                                                            <DropdownMenuItem
-                                                                key={lang.code}
-                                                                onClick={() => setLanguage(lang.code)}
-                                                                className="flex items-center justify-between space-x-2 cursor-pointer hover:bg-muted"
-                                                            >
-                                                                <div className="flex items-center space-x-2">
-                                                                    <Image
-                                                                        src={lang.icon}
-                                                                        alt={lang.label}
-                                                                        width={20}
-                                                                        height={15}
-                                                                        className=""
-                                                                    />
-                                                                    <span>{lang.label}</span>
-                                                                </div>
-                                                                {language === lang.code && <Check className="w-4 h-4 text-primary" />}
-                                                            </DropdownMenuItem>
-                                                        ))}
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </div>
-                                        </div>
-                                        <div className="border"></div>
-                                        <div className="grid grid-cols-2 gap-4 ">
-                                            {[
-                                                { label: "Marketplace", href: "/marketplace" },
-                                                { label: "Marketing", href: "/services" },
-                                                { label: "App Builder", href: "/app-builder" },
-                                                { label: "Vendor App", href: "/vendor-application" },
-                                                { label: "AI Tools", href: "/ai-tools" },
-                                                { label: "About", href: "/about" },
-                                                { label: "Contact", href: "/contact" },
-
-                                            ].map((item) => (
-                                                <Link
-                                                    key={item.href}
-                                                    href={item.href}
-                                                    className={navigationMenuTriggerStyle({
-                                                        className: isActive(item.href) ? "border bg-muted text-primary" : "text-muted-foreground hover:text-primary",
-                                                    })}
-                                                    onClick={() => setOpen(false)}
-                                                >
-                                                    {item.label}
-                                                </Link>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </SheetContent>
-                            </Sheet>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </nav>
-    );
+        </div>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#00C3C1] via-[#197bc8] to-[#00C3C1]" />
+    </nav>
+  );
 };
-
-// Helper component
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function ListItem({
-    title,
-    children,
-    href,
-    icon: Icon,
-}: {
-    title: string;
-    children: React.ReactNode;
-    href: string;
-    icon?: React.ComponentType<{ className?: string }>;
-}) {
-    return (
-        <li>
-            <NavigationMenuLink asChild>
-                <Link
-                    href={href}
-                    className="block rounded-md p-3 hover:bg-muted transition-colors"
-                >
-                    <div className="flex items-center space-x-2 text-sm font-medium">
-                        {Icon && <Icon className="w-4 h-4 text-primary-500" />} {/*  */}
-                        <span>{title}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{children}</p>
-                </Link>
-            </NavigationMenuLink>
-        </li>
-    );
-}
 
 export default Navbar;

@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 
 export default function BridgeAnimation() {
@@ -20,7 +22,7 @@ export default function BridgeAnimation() {
         alt="Bridge"
         className="w-full h-auto relative"
         initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 5, scale: [1, 1, 1] }}
+        animate={{ opacity: 1, scale: [1, 1, 1] }}
         transition={{
           opacity: { duration: 5, ease: "easeOut" },
           scale: {

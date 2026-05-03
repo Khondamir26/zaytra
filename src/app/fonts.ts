@@ -1,23 +1,22 @@
-// src/app/fonts.ts
-import localFont from "next/font/local";
+import { Instrument_Sans, Space_Mono, Inter } from "next/font/google";
 
-export const satoshi = localFont({
-    src: [
-        {
-            path: "../../public/fonts/Satoshi-Medium.woff2",
-            weight: "500",
-            style: "normal",
-        },
-        {
-            path: "../../public/fonts/Satoshi-Bold.woff2",
-            weight: "700",
-            style: "normal",
-        },
-        {
-            path: "../../public/fonts/Satoshi-Black.woff2",
-            weight: "900",
-            style: "normal",
-        },
-    ],
-    variable: "--font-satoshi",
+export const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+export const instrumentSans = Instrument_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-instrument-sans",
+  display: "swap",
+});
+
+export const spaceMono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
+  display: "swap",
 });

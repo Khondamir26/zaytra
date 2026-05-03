@@ -1,8 +1,5 @@
-// Удаляет null, undefined, пустые строки, {}, но оставляет массивы
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function sanitizePayload(obj: Record<string, any>) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cleaned: Record<string, any> = {};
+export function sanitizePayload(obj: Record<string, unknown>) {
+    const cleaned: Record<string, unknown> = {};
 
     for (const key in obj) {
         const value = obj[key];

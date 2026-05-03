@@ -1,262 +1,127 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Linkedin,
-  Twitter,
-  Instagram,
-  Youtube,
-  Facebook,
-  FacebookIcon,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import Image from "next/image";
+import { Mail, Phone, MapPin } from "lucide-react";
+import type { ElementType } from "react";
+import Logo from "@/components/Logo";
+import { useLanguage } from "@/context/LanguageContext";
 
+const socials = [
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/khondamir-tuychiev/",
+    svg: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>,
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/binovalabs/",
+    svg: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>,
+  },
+  {
+    label: "X",
+    href: "https://x.com/binovalabs",
+    svg: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>,
+  },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/people/binovalabs/",
+    svg: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>,
+  },
+];
 
+const contactIcons: { Icon: ElementType; href: string; text: string }[] = [
+  { Icon: Mail,   href: "mailto:support@binovalabs.com",                   text: "support@binovalabs.com" },
+  { Icon: Phone,  href: "tel:+998950868000",                               text: "+998 95 086 80 00" },
+  { Icon: MapPin, href: "https://maps.app.goo.gl/sYWq4tavJdwGZzMm7",     text: "Tashkent, Uzbekistan" },
+];
 
 const Footer = () => {
-  // добавлено: стейт и отправка формы
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { t } = useLanguage();
 
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !email.includes("@")) {
-      toast.error("Please enter a valid email address");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        toast.success(data.message);
-        setEmail("");
-      } else {
-        toast.error(data.message || "Subscription failed");
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
-  //
   return (
-    <footer className="bg-accent ">
-      {/* Main Footer */}
-      <div className="container mx-auto px-4 py-16 ">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="space-y-6 text-muted dark:text-white">
-            <Link href="/" className="flex items-center gap-2">
-              <Image
-                src="/icons/healplant.png" // путь к логотипу
-                alt="HealPlant.AI Logo"
-                width={65}
-                height={65}
-                className=" w-10 h-10 object-contain"
-              />
-              <span className="text-lg text-muted font-semibold dark:text-white [text-shadow:1px_1px_2px_black]">Plant.ai</span>
-            </Link>
-            <p className="leading-relaxed text-muted dark:text-white">
-              Plant.AI helps people identify plants, detect diseases, and improve plant care using AI-powered diagnostics and smart guidance.
+    <footer className="bg-[#0B1F3A]">
 
+      <div className="h-1 w-full bg-gradient-to-r from-[#00C3C1] via-[#197bc8] to-[#00C3C1]" />
+
+      <div className="container mx-auto px-4 sm:px-6 py-10 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+
+          {/* Brand */}
+          <div className="lg:col-span-2 space-y-6">
+            <Logo />
+            <p className="text-sm text-white/60 leading-relaxed max-w-xs">
+              {t.footer.tagline}
             </p>
-            <div className="flex space-x-4 ">
-              <Link
-                href="https://www.linkedin.com/company/khondamir-tuychiev/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer"
-                  aria-label="Linkedin"
-                >
-                  <Linkedin className="w-5 h-5" />
-                </Button>
-              </Link>
-              <Link
-                href="https://www.instagram.com/zaytra.ai/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer"
-                  aria-label="Instagram"
-                >
-                  <Instagram className="w-5 h-5" />
-                </Button>
-              </Link>
-              <Link
-                href="https://x.com/zaytra_ai"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer"
-                  aria-label="Twitter"
-                >
-                  <Twitter className="w-5 h-5" />
-                </Button>
-              </Link>
-              <Link
-                href="https://www.facebook.com/people/Zaytraai/61578619650540/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="rounded-full p-2 hover:ring-1 ring-accent/ hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor] cursor-pointer"
-                  aria-label="Facebook"
-                >
-                  <Facebook className="w-5 h-5" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div className="space-y-6 text-muted dark:text-white">
-            <h3 className="text-lg font-semibold [text-shadow:1px_1px_2px_black]">Product</h3>
-            <div className="space-y-2">
-              {[
-                { label: "Plant Scanner", href: "/marketplace" },
-                { label: "Features", href: "/services" },
-                { label: "How It Works", href: "/vendor-application" },
-                { label: "About HealPlant.AI", href: "/about" },
-                { label: "Contact", href: "/contact" },
-              ].map((link) => (
+            <div className="flex gap-2">
+              {socials.map(({ href, label, svg }) => (
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block dark:text-white text-muted hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor]"
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all duration-200"
                 >
-                  {link.label}
+                  {svg}
                 </Link>
               ))}
             </div>
+          </div>
+
+          {/* Nav links */}
+          <div className="space-y-5">
+            <h3 className="font-mono text-[11px] font-bold tracking-widest uppercase text-white/40">{t.footer.companyLabel}</h3>
+            <ul className="space-y-3">
+              {t.footer.navLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-sm text-white/60 hover:text-white transition-colors duration-200">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Contact */}
-          <div className="space-y-6 text-muted dark:text-white">
-            <h3 className="text-lg font-semibold [text-shadow:1px_1px_2px_black]">Support</h3>
-            <div className="space-y-4 text-muted dark:text-white">
-              <div className="space-y-2 items-center">
-                <div className="mail-zaytra flex items-center space-x-3">
-                  <Link href="mailto:support@healplant.ai
-">
-                    <Mail className="w-5 h-5 " />
+          <div className="space-y-5">
+            <h3 className="font-mono text-[11px] font-bold tracking-widest uppercase text-white/40">{t.footer.contactLabel}</h3>
+            <ul className="space-y-3">
+              {contactIcons.map(({ Icon, href, text }) => (
+                <li key={text}>
+                  <Link
+                    href={href}
+                    target={href.startsWith("http") ? "_blank" : undefined}
+                    rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="flex items-center gap-3 text-sm text-white/60 hover:text-white transition-colors duration-200"
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0 text-[#00C3C1]" />
+                    {text}
                   </Link>
-                  <Link href="mailto:support@healplant.ai"><span>support@healplant.ai</span>
-                  </Link>
-                </div>
-                <div className="mail-khonda flex items-center space-x-3">
-                  <Link href="mailto:support@healplant.ai">
-                    <Mail className="w-5 h-5 " />
-                  </Link>
-                  <Link href="mailto:khondamirtuychiev@gmail.com"><span>khondamirtuychiev@gmail.com</span>
-
-                  </Link>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Link href="tel:+998950868000">
-                  <Phone className="w-5 h-5 " />
-                </Link>
-                <Link href="tel:+998950868000"><span>+998 95 086 80 00</span>
-                </Link>
-
-              </div>
-              <div className="flex items-start space-x-3">
-                <Link href="https://maps.app.goo.gl/sYWq4tavJdwGZzMm7" target="_blank">
-                  <MapPin className="w-5 h-5 mt-1" />
-                </Link>
-                <Link href="https://maps.app.goo.gl/sYWq4tavJdwGZzMm7" target="_blank">
-                  <span>
-                    Tashkent, Uzbekistan
-                  </span>
-                </Link>
-
-              </div>
-            </div>
-
-
-          </div>
-          {/* Newsletter */}
-          <div className="space-y-6 text-muted dark:text-white">
-            <h4 className="text-lg font-semibold [text-shadow:1px_1px_2px_black]">Newsletter</h4>
-            <p className="text-sm text-muted dark:text-white">
-              Get plant care tips and<br />Plant.AI feature updates
-            </p>
-            <form className="flex space-x-2" onSubmit={handleSubscribe}>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="text-muted dark:border-white rounded-full dark:bg-transparent dark:placeholder:text-muted"
-                required
-              />
-              <Button
-                variant="default"
-                type="submit"
-                className="[text-shadow:1px_1px_2px_black] hover:bg-muted/20 border dark:border-white cursor-pointer rounded-full"
-                disabled={loading}
-              >
-                {loading ? "Subscribing..." : "Subscribe"}
-              </Button>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Footer */}
-      <div className="border-t border-muted dark:border-white">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-muted text-sm dark:text-white [text-shadow:1px_1px_2px_black]">
-              © 2026 Plant.ai. All rights reserved.
-            </div>
-            <div className="flex space-x-6 mt-4 md:mt-0 [text-shadow:1px_1px_2px_black]">
-              {[
-                { label: "Privacy Policy", href: "/privacy" },
-                { label: "Terms of Service", href: "/terms" },
-                { label: "Cookie Policy", href: "/cookies" },
-              ].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="hover:underline block text-sm dark:text-white text-muted hover:text-black dark:hover:text-white transition-all duration-200 hover:[text-shadow:0_0_0.5px_currentColor]"
-                >
-                  {link.label}
-                </Link>
+                </li>
               ))}
-            </div>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="container mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p className="font-mono text-xs text-white/30 text-center sm:text-left">{t.footer.copyright}</p>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+            {[
+              { label: t.footer.privacy,  href: "/" },
+              { label: t.footer.terms,    href: "/" },
+              { label: t.footer.cookies,  href: "/" },
+            ].map((link) => (
+              <Link key={link.label} href={link.href} className="font-mono text-xs text-white/30 hover:text-white/70 transition-colors duration-200">
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
+
     </footer>
   );
 };

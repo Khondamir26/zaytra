@@ -7,9 +7,17 @@ const config: Config = {
     "./src/**/*.{ts,tsx,js,jsx}",
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "1.5rem",
+      screens: {
+        "2xl": "1488px",
+      },
+    },
     extend: {
       fontFamily: {
-        sans: ["var(--font-poppins)", "sans-serif"], // from next/font
+        sans: ["var(--font-instrument-sans)", "sans-serif"],
+        mono: ["var(--font-space-mono)", "monospace"],
       },
     },
   },
